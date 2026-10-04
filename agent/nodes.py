@@ -66,7 +66,7 @@ def planner(state: AgentState) -> dict:
 def explainer(state: AgentState) -> dict:
     with logfire.span("explainer",
                       question=state["question"],
-                      model="llama-3.3-70b-versatile"):
+                      model="openai/gpt-oss-20b"):
         response = _groq.invoke([
             SystemMessage(content=_EXPLAINER_PROMPT),
             HumanMessage(content=state["question"]),
@@ -75,7 +75,7 @@ def explainer(state: AgentState) -> dict:
                      answer_length=len(response.content))
         return {
             "specialist_output": response.content,
-            "model_used": "groq/llama-3.3-70b-versatile",
+            "model_used": "groq/openai/gpt-oss-20b",
             "node_path": state.get("node_path", []) + ["explainer"],
         }
         
@@ -83,7 +83,7 @@ def explainer(state: AgentState) -> dict:
 def analyst(state: AgentState) -> dict:
     with logfire.span("analyst",
                       question=state["question"],
-                      model="llama-3.3-70b-versatile"):
+                      model="openai/gpt-oss-20b"):
         response = _groq.invoke([
             SystemMessage(content=_ANALYST_PROMPT),
             HumanMessage(content=state["question"]),
@@ -92,7 +92,7 @@ def analyst(state: AgentState) -> dict:
                      answer_length=len(response.content))
         return {
             "specialist_output": response.content,
-            "model_used": "groq/llama-3.3-70b-versatile",
+            "model_used": "groq/openai/gpt-oss-20b",
             "node_path": state.get("node_path", []) + ["analyst"],
         }
 
@@ -100,7 +100,7 @@ def analyst(state: AgentState) -> dict:
 def creator(state: AgentState) -> dict:
     with logfire.span("creator",
                       question=state["question"],
-                      model="llama-3.3-70b-versatile"):
+                      model="openai/gpt-oss-20b"):
         response = _groq.invoke([
             SystemMessage(content=_CREATOR_PROMPT),
             HumanMessage(content=state["question"]),
@@ -109,7 +109,7 @@ def creator(state: AgentState) -> dict:
                      answer_length=len(response.content))
         return {
             "specialist_output": response.content,
-            "model_used": "groq/llama-3.3-70b-versatile",
+            "model_used": "groq/openai/gpt-oss-20b",
             "node_path": state.get("node_path", []) + ["creator"],
         }
 
@@ -139,7 +139,7 @@ def web_searcher(state: AgentState) -> dict:
 
         # Step 2 — Groq synthesises the results
         with logfire.span("synthesize_results",
-                          model="llama-3.3-70b-versatile"):
+                          model="openai/gpt-oss-20b"):
             summary = _groq.invoke([
                 SystemMessage(content=(
                     "Synthesize the search results into a clear, concise answer. "
@@ -156,7 +156,7 @@ def web_searcher(state: AgentState) -> dict:
         return {
             "specialist_output": summary.content,
             "search_results": raw,
-            "model_used": "tavily + groq/llama-3.3-70b-versatile",
+            "model_used": "tavily + groq/openai/gpt-oss-20b",
             "node_path": state.get("node_path", []) + ["web_searcher"],
         }
 
@@ -165,13 +165,13 @@ def web_searcher(state: AgentState) -> dict:
 def formatter(state: AgentState) -> dict:
     with logfire.span("formatter",
                       intent=state["intent"],
-                      model="llama-3.3-70b-versatile"):
+                      model="openai/gpt-oss-20b"):
         response = _groq.invoke([
             SystemMessage(content=_FORMATTER_PROMPT),
             HumanMessage(content=state["specialist_output"]),
         ])
         final     = response.content
-        model_tag = state.get("model_used", "") + " → groq/llama-3.3-70b-versatile (formatter)"
+        model_tag = state.get("model_used", "") + " → groq/openai/gpt-oss-20b (formatter)"
 
         logfire.info("formatter_done",
                      input_length=len(state["specialist_output"]),

@@ -7,7 +7,7 @@ def groq_llm(temperature: float = 0.3) -> ChatOpenAI:
     return ChatOpenAI(
         base_url="https://api.groq.com/openai/v1",
         api_key=os.getenv("GROQ_API_KEY"),
-        model="llama-3.3-70b-versatile",
+        model="openai/gpt-oss-20b",
         temperature=temperature,
     )
 

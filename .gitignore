@@ -1,7 +1,17 @@
+# project-local envs and secrets
 pylogenv
-
+logenv
+.env
 .logfire
 
-.env
+# Python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ipynb_checkpoints/
 
-logenv
+# OS/editor
+.DS_Store
